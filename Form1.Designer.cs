@@ -46,6 +46,7 @@ namespace _1_k_forms
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.searchBox = new System.Windows.Forms.TextBox();
             this.strikeout_font_style = new System.Windows.Forms.Button();
             this.underline_font_style = new System.Windows.Forms.Button();
             this.italic_font_button = new System.Windows.Forms.Button();
@@ -53,6 +54,7 @@ namespace _1_k_forms
             this.font_size_box = new System.Windows.Forms.ComboBox();
             this.font_familyName_box = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
+            this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -70,6 +72,7 @@ namespace _1_k_forms
             this.richTextBox1.Size = new System.Drawing.Size(836, 456);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
+            //this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // open
             // 
@@ -155,7 +158,10 @@ namespace _1_k_forms
             // 
             // groupBox1
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.OldLace;
+            this.groupBox1.Controls.Add(this.searchBox);
             this.groupBox1.Controls.Add(this.strikeout_font_style);
             this.groupBox1.Controls.Add(this.underline_font_style);
             this.groupBox1.Controls.Add(this.italic_font_button);
@@ -164,17 +170,29 @@ namespace _1_k_forms
             this.groupBox1.Controls.Add(this.font_familyName_box);
             this.groupBox1.Location = new System.Drawing.Point(0, 31);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(219, 123);
+            this.groupBox1.Size = new System.Drawing.Size(836, 123);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Visible = false;
+            // 
+            // searchBox
+            // 
+            this.searchBox.AccessibleDescription = "";
+            this.searchBox.AllowDrop = true;
+            this.searchBox.ForeColor = System.Drawing.Color.Gray;
+            this.searchBox.Location = new System.Drawing.Point(310, 21);
+            this.searchBox.Multiline = true;
+            this.searchBox.Name = "searchBox";
+            this.searchBox.Size = new System.Drawing.Size(190, 31);
+            this.searchBox.TabIndex = 11;
+            this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             // 
             // strikeout_font_style
             // 
             this.strikeout_font_style.FlatAppearance.BorderSize = 0;
             this.strikeout_font_style.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.strikeout_font_style.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Strikeout);
-            this.strikeout_font_style.Location = new System.Drawing.Point(173, 67);
+            this.strikeout_font_style.Location = new System.Drawing.Point(129, 69);
             this.strikeout_font_style.Name = "strikeout_font_style";
             this.strikeout_font_style.Size = new System.Drawing.Size(40, 35);
             this.strikeout_font_style.TabIndex = 5;
@@ -187,7 +205,7 @@ namespace _1_k_forms
             this.underline_font_style.FlatAppearance.BorderSize = 0;
             this.underline_font_style.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.underline_font_style.Font = new System.Drawing.Font("Calibri", 13F, System.Drawing.FontStyle.Underline);
-            this.underline_font_style.Location = new System.Drawing.Point(121, 67);
+            this.underline_font_style.Location = new System.Drawing.Point(88, 67);
             this.underline_font_style.Name = "underline_font_style";
             this.underline_font_style.Size = new System.Drawing.Size(35, 35);
             this.underline_font_style.TabIndex = 4;
@@ -200,7 +218,7 @@ namespace _1_k_forms
             this.italic_font_button.FlatAppearance.BorderSize = 0;
             this.italic_font_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.italic_font_button.Font = new System.Drawing.Font("Calibri", 13F, System.Drawing.FontStyle.Italic);
-            this.italic_font_button.Location = new System.Drawing.Point(63, 67);
+            this.italic_font_button.Location = new System.Drawing.Point(47, 67);
             this.italic_font_button.Name = "italic_font_button";
             this.italic_font_button.Size = new System.Drawing.Size(35, 35);
             this.italic_font_button.TabIndex = 3;
@@ -210,7 +228,6 @@ namespace _1_k_forms
             // 
             // bold_font_button
             // 
-            this.bold_font_button.BackColor = System.Drawing.SystemColors.Control;
             this.bold_font_button.FlatAppearance.BorderSize = 0;
             this.bold_font_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bold_font_button.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
@@ -256,9 +273,9 @@ namespace _1_k_forms
             28,
             29,
             30});
-            this.font_size_box.Location = new System.Drawing.Point(151, 21);
+            this.font_size_box.Location = new System.Drawing.Point(173, 21);
             this.font_size_box.Name = "font_size_box";
-            this.font_size_box.Size = new System.Drawing.Size(62, 30);
+            this.font_size_box.Size = new System.Drawing.Size(88, 30);
             this.font_size_box.TabIndex = 1;
             this.font_size_box.Text = "14";
             this.font_size_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_size);
@@ -274,7 +291,7 @@ namespace _1_k_forms
             "Algerian"});
             this.font_familyName_box.Location = new System.Drawing.Point(6, 21);
             this.font_familyName_box.Name = "font_familyName_box";
-            this.font_familyName_box.Size = new System.Drawing.Size(139, 30);
+            this.font_familyName_box.Size = new System.Drawing.Size(161, 30);
             this.font_familyName_box.TabIndex = 0;
             this.font_familyName_box.Text = "Calibri";
             this.font_familyName_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_familyName);
@@ -292,9 +309,11 @@ namespace _1_k_forms
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.ClientSizeChanged += new System.EventHandler(this.Form1_ClientSizeChanged);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,5 +343,7 @@ namespace _1_k_forms
         private Button bold_font_button;
         private Button underline_font_style;
         private Button strikeout_font_style;
+        private TextBox searchBox;
+        private System.ComponentModel.BackgroundWorker backgroundWorker4;
     }
 }
