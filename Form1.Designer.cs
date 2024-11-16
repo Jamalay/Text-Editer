@@ -42,7 +42,6 @@ namespace _1_k_forms
             this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -55,6 +54,7 @@ namespace _1_k_forms
             this.font_familyName_box = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
+            this.encryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +72,7 @@ namespace _1_k_forms
             this.richTextBox1.Size = new System.Drawing.Size(836, 456);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            //this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            this.richTextBox1.TextChanged += new System.EventHandler(this.RichTextBox1_TextChanged);
             // 
             // open
             // 
@@ -94,8 +94,7 @@ namespace _1_k_forms
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.mainToolStripMenuItem,
-            this.fontsToolStripMenuItem,
-            this.searchToolStripMenuItem});
+            this.fontsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(836, 28);
@@ -107,7 +106,8 @@ namespace _1_k_forms
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem1,
             this.saveToolStripMenuItem1,
-            this.createToolStripMenuItem1});
+            this.createToolStripMenuItem1,
+            this.encryptToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -116,7 +116,7 @@ namespace _1_k_forms
             // 
             this.openToolStripMenuItem1.Name = "openToolStripMenuItem1";
             this.openToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
+            this.openToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.openToolStripMenuItem1.Text = "Open";
             this.openToolStripMenuItem1.Click += new System.EventHandler(this.OpenToolStripMenuItem1_Click);
             // 
@@ -124,7 +124,7 @@ namespace _1_k_forms
             // 
             this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
             this.saveToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
+            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.saveToolStripMenuItem1.Text = "Save";
             this.saveToolStripMenuItem1.Click += new System.EventHandler(this.SaveToolStripMenuItem1_Click);
             // 
@@ -132,7 +132,7 @@ namespace _1_k_forms
             // 
             this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
             this.createToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.createToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
+            this.createToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.createToolStripMenuItem1.Text = "Create";
             this.createToolStripMenuItem1.Click += new System.EventHandler(this.CreateToolStripMenuItem1_Click);
             // 
@@ -149,12 +149,6 @@ namespace _1_k_forms
             this.fontsToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
             this.fontsToolStripMenuItem.Text = "fonts";
             this.fontsToolStripMenuItem.Click += new System.EventHandler(this.FontsToolStripMenuItem_Click);
-            // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
-            this.searchToolStripMenuItem.Text = "Search";
             // 
             // groupBox1
             // 
@@ -296,6 +290,13 @@ namespace _1_k_forms
             this.font_familyName_box.Text = "Calibri";
             this.font_familyName_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_familyName);
             // 
+            // encryptToolStripMenuItem
+            // 
+            this.encryptToolStripMenuItem.Name = "encryptToolStripMenuItem";
+            this.encryptToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.encryptToolStripMenuItem.Text = "Encrypt";
+            this.encryptToolStripMenuItem.Click += new System.EventHandler(this.EncryptToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -333,7 +334,6 @@ namespace _1_k_forms
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private ToolStripMenuItem mainToolStripMenuItem;
         private ToolStripMenuItem fontsToolStripMenuItem;
-        private ToolStripMenuItem searchToolStripMenuItem;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private GroupBox groupBox1;
         private ComboBox font_familyName_box;
@@ -345,5 +345,6 @@ namespace _1_k_forms
         private Button strikeout_font_style;
         private TextBox searchBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker4;
+        private ToolStripMenuItem encryptToolStripMenuItem;
     }
 }

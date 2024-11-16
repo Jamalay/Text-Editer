@@ -14,7 +14,6 @@ namespace _1_k_forms
         bool mainButton_clicked;
         bool isSaved;
         string searching_text;
-        int searching_index;
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -22,7 +21,6 @@ namespace _1_k_forms
         {
             mainButton_clicked = isSaved = false;
             searching_text = "";
-            searching_index = 0;
             saveFileDialog.Filter = "(*.txt)|*.txt|(*.docx)|*.docx|(*.png)|*.png|(*.jamalay)|*.jamalay|(*.xml)|*.xml|(*.rtf)|*.rtf|All files(*.*)|*.*";
             InitializeComponent();
             richTextBox1.Size = new Size(this.Width - 150, this.Height - menuStrip1.Height - 35);
@@ -49,6 +47,8 @@ namespace _1_k_forms
         private void SaveToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             string rtf_text = richTextBox1.Rtf;
+            isSaved = true;
+            Text = Text.Substring(0, Text.IndexOf("*"));
             if (fileName != null)
             {
                 richTextBox1.SaveFile(fileName);
@@ -57,7 +57,6 @@ namespace _1_k_forms
             if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
             fileName = saveFileDialog.FileName;
             richTextBox1.SaveFile(fileName);
-            Text = Text.Substring(Text.IndexOf("*")-1,1);
         }
 
         private void CreateToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -73,17 +72,23 @@ namespace _1_k_forms
             fontDialog1 = new FontDialog();
             if (fontDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
-            richTextBox1.Font = fontDialog1.Font;
+            richTextBox1.SelectionFont = fontDialog1.Font;
             richTextBox1.ShowSelectionMargin = true;
         }
 
         private void Change_font_familyName(object sender, EventArgs e)
         {
-            var f = richTextBox1.SelectionFont;
-            if(f == null)
-                return;
-            ComboBox combo_box_familyName = sender as ComboBox;
-            richTextBox1.SelectionFont = new Font(combo_box_familyName.Text, f.Size, f.Style);
+            int start_index = richTextBox1.SelectionStart;
+            int selection_length = richTextBox1.SelectionLength;
+            for (int i = start_index, j = 0; j < selection_length; i++, j++)
+            {
+                richTextBox1.Select(i, 1);
+                var f = richTextBox1.SelectionFont;
+                ComboBox combo_box_familyName = sender as ComboBox;
+                richTextBox1.SelectionFont = new Font(combo_box_familyName.Text, f.Size, f.Style);
+            }
+            richTextBox1.SelectionStart = start_index;
+            richTextBox1.SelectionLength = selection_length;
         }
 
         private void Change_font_size(object sender, EventArgs e)
@@ -148,32 +153,22 @@ namespace _1_k_forms
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
+            if (textBox.Text.Length < searching_text.Length)
+                FindText(searching_text, Color.White);
+            else
+                FindText(textBox.Text, Color.Coral, textBox.Text);
+        }
+
+        private void FindText(string text, Color colorOfFoundText, string searching_text_val = "")
+        {
             int start_index = 0;
             int index;
-            if (textBox.Text.Length < searching_text.Length)
+            while ((index = richTextBox1.Find(text, start_index, RichTextBoxFinds.WholeWord)) >= 0 || start_index >= richTextBox1.Text.Length)
             {
-                while ((index = richTextBox1.Find(searching_text, start_index, RichTextBoxFinds.None)) >= 0)
-                {
-                    HighlightFont(index, searching_text.Length, Color.White);
-                    start_index = index + searching_text.Length;
-                }
-                searching_text = "";
+                HighlightFont(index, text.Length, colorOfFoundText);
+                start_index = index + text.Length;
             }
-            else
-            {
-                while ((index = richTextBox1.Find(textBox.Text, start_index, RichTextBoxFinds.WholeWord)) >= 0 || start_index >= richTextBox1.Text.Length)
-                {
-                    HighlightFont(index, textBox.Text.Length, Color.Coral);
-                    start_index = index + textBox.Text.Length;
-
-                }
-                searching_text = textBox.Text;
-            }
-        }
-        
-        private void FindText()
-        {
-
+            searching_text = searching_text_val;
         }
 
         private void HighlightFont(int index, int wordLength, Color color)
@@ -195,13 +190,18 @@ namespace _1_k_forms
                 this.richTextBox1.Location = new System.Drawing.Point((this.ClientSize.Width - richTextBox1.Width) / 2, menuStrip1.Height + 2);
         }
 
-        //private void richTextBox1_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (isSaved)
-        //    {
-        //        isSaved = false;
-        //        Text = Text + "*";
-        //    }
-        //}
+        private void RichTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if(!Text.Contains("*"))
+            {
+                isSaved = false;
+                Text += "*";
+            }
+        }
+
+        private void EncryptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
