@@ -5,6 +5,7 @@ using System.IO;
 using System.Drawing;
 using System.Linq;
 using System.ComponentModel;
+using System.Security.Cryptography;
 
 namespace _1_k_forms
 {
@@ -13,13 +14,14 @@ namespace _1_k_forms
         string fileName;
         bool mainButton_clicked;
         bool isSaved;
+        bool wrongFileFormat;
         string searching_text;
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         OpenFileDialog openFileDialog = new OpenFileDialog();
 
         public Form1()
         {
-            mainButton_clicked = isSaved = false;
+            mainButton_clicked = isSaved = wrongFileFormat = false;
             searching_text = "";
             saveFileDialog.Filter = "(*.txt)|*.txt|(*.docx)|*.docx|(*.png)|*.png|(*.jamalay)|*.jamalay|(*.xml)|*.xml|(*.rtf)|*.rtf|All files(*.*)|*.*";
             InitializeComponent();
@@ -31,21 +33,32 @@ namespace _1_k_forms
         private void OpenToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.Cancel) return;
+            wrongFileFormat = false;
             try
             {
                 fileName = openFileDialog.FileName;
-                richTextBox1.LoadFile(fileName, RichTextBoxStreamType.RichText);
+                richTextBox1.LoadFile(fileName/*, RichTextBoxStreamType.RichText*/);
                 this.Text = fileName;
                 isSaved = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                wrongFileFormat = true;
+                MessageBox.Show($"Ошибка: {ex.Message}.\nФайл будет открыт в режиме \"Только для чтения\"");
+            }
+            finally
+            {
+                if(wrongFileFormat)
+                {
+                    richTextBox1.LoadFile(fileName, RichTextBoxStreamType.PlainText);
+                    richTextBox1.ReadOnly = true;
+                }
             }
         }
 
         private void SaveToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (wrongFileFormat) return;
             string rtf_text = richTextBox1.Rtf;
             isSaved = true;
             Text = Text.Substring(0, Text.IndexOf("*"));
@@ -201,7 +214,35 @@ namespace _1_k_forms
 
         private void EncryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (FileStream fileStream = new FileStream("../../TestData.txt", FileMode.OpenOrCreate))
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    byte[] key =
+                    {
+                        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                        0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
+                     };
+                    aes.Key = key;
 
+                    byte[] iv = aes.IV;
+                    fileStream.Write(iv, 0, iv.Length);
+                    using (CryptoStream cryptoStream = new CryptoStream(
+                        fileStream,
+                        aes.CreateEncryptor(),
+                        CryptoStreamMode.Write))
+                    {
+                        // By default, the StreamWriter uses UTF-8 encoding.
+                        // To change the text encoding, pass the desired encoding as the second parameter.
+                        // For example, new StreamWriter(cryptoStream, Encoding.Unicode).
+                        using (StreamWriter encryptWriter = new StreamWriter(cryptoStream))
+                        {
+                            encryptWriter.WriteLine(richTextBox1.Text);
+                            this.Close();
+                        }
+                    }
+                }
+            }
         }
     }
 }

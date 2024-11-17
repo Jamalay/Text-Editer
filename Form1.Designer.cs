@@ -40,11 +40,14 @@ namespace _1_k_forms
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.encryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TextColorChangeButton = new System.Windows.Forms.Button();
+            this.BackColorChangeButton = new System.Windows.Forms.Button();
             this.searchBox = new System.Windows.Forms.TextBox();
             this.strikeout_font_style = new System.Windows.Forms.Button();
             this.underline_font_style = new System.Windows.Forms.Button();
@@ -54,7 +57,6 @@ namespace _1_k_forms
             this.font_familyName_box = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
-            this.encryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -116,7 +118,7 @@ namespace _1_k_forms
             // 
             this.openToolStripMenuItem1.Name = "openToolStripMenuItem1";
             this.openToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
             this.openToolStripMenuItem1.Text = "Open";
             this.openToolStripMenuItem1.Click += new System.EventHandler(this.OpenToolStripMenuItem1_Click);
             // 
@@ -124,7 +126,7 @@ namespace _1_k_forms
             // 
             this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
             this.saveToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
             this.saveToolStripMenuItem1.Text = "Save";
             this.saveToolStripMenuItem1.Click += new System.EventHandler(this.SaveToolStripMenuItem1_Click);
             // 
@@ -132,9 +134,16 @@ namespace _1_k_forms
             // 
             this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
             this.createToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.createToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.createToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
             this.createToolStripMenuItem1.Text = "Create";
             this.createToolStripMenuItem1.Click += new System.EventHandler(this.CreateToolStripMenuItem1_Click);
+            // 
+            // encryptToolStripMenuItem
+            // 
+            this.encryptToolStripMenuItem.Name = "encryptToolStripMenuItem";
+            this.encryptToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
+            this.encryptToolStripMenuItem.Text = "Encrypt";
+            this.encryptToolStripMenuItem.Click += new System.EventHandler(this.EncryptToolStripMenuItem_Click);
             // 
             // mainToolStripMenuItem
             // 
@@ -155,6 +164,8 @@ namespace _1_k_forms
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.BackColor = System.Drawing.Color.OldLace;
+            this.groupBox1.Controls.Add(this.TextColorChangeButton);
+            this.groupBox1.Controls.Add(this.BackColorChangeButton);
             this.groupBox1.Controls.Add(this.searchBox);
             this.groupBox1.Controls.Add(this.strikeout_font_style);
             this.groupBox1.Controls.Add(this.underline_font_style);
@@ -168,6 +179,28 @@ namespace _1_k_forms
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Visible = false;
+            // 
+            // TextColorChangeButton
+            // 
+            this.TextColorChangeButton.FlatAppearance.BorderSize = 0;
+            this.TextColorChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.TextColorChangeButton.Location = new System.Drawing.Point(219, 67);
+            this.TextColorChangeButton.Name = "TextColorChangeButton";
+            this.TextColorChangeButton.Size = new System.Drawing.Size(40, 35);
+            this.TextColorChangeButton.TabIndex = 13;
+            this.TextColorChangeButton.Text = "A";
+            this.TextColorChangeButton.UseVisualStyleBackColor = true;
+            // 
+            // BackColorChangeButton
+            // 
+            this.BackColorChangeButton.FlatAppearance.BorderSize = 0;
+            this.BackColorChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BackColorChangeButton.Location = new System.Drawing.Point(173, 67);
+            this.BackColorChangeButton.Name = "BackColorChangeButton";
+            this.BackColorChangeButton.Size = new System.Drawing.Size(40, 35);
+            this.BackColorChangeButton.TabIndex = 12;
+            this.BackColorChangeButton.Text = "A";
+            this.BackColorChangeButton.UseVisualStyleBackColor = true;
             // 
             // searchBox
             // 
@@ -186,7 +219,7 @@ namespace _1_k_forms
             this.strikeout_font_style.FlatAppearance.BorderSize = 0;
             this.strikeout_font_style.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.strikeout_font_style.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Strikeout);
-            this.strikeout_font_style.Location = new System.Drawing.Point(129, 69);
+            this.strikeout_font_style.Location = new System.Drawing.Point(129, 67);
             this.strikeout_font_style.Name = "strikeout_font_style";
             this.strikeout_font_style.Size = new System.Drawing.Size(40, 35);
             this.strikeout_font_style.TabIndex = 5;
@@ -290,13 +323,6 @@ namespace _1_k_forms
             this.font_familyName_box.Text = "Calibri";
             this.font_familyName_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_familyName);
             // 
-            // encryptToolStripMenuItem
-            // 
-            this.encryptToolStripMenuItem.Name = "encryptToolStripMenuItem";
-            this.encryptToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.encryptToolStripMenuItem.Text = "Encrypt";
-            this.encryptToolStripMenuItem.Click += new System.EventHandler(this.EncryptToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -346,5 +372,7 @@ namespace _1_k_forms
         private TextBox searchBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker4;
         private ToolStripMenuItem encryptToolStripMenuItem;
+        private Button TextColorChangeButton;
+        private Button BackColorChangeButton;
     }
 }
