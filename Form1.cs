@@ -91,13 +91,13 @@ namespace _1_k_forms
 
         private void Change_font_familyName(object sender, EventArgs e)
         {
+            ComboBox combo_box_familyName = sender as ComboBox;
             int start_index = richTextBox1.SelectionStart;
             int selection_length = richTextBox1.SelectionLength;
             for (int i = start_index, j = 0; j < selection_length; i++, j++)
             {
                 richTextBox1.Select(i, 1);
                 var f = richTextBox1.SelectionFont;
-                ComboBox combo_box_familyName = sender as ComboBox;
                 richTextBox1.SelectionFont = new Font(combo_box_familyName.Text, f.Size, f.Style);
             }
             richTextBox1.SelectionStart = start_index;
@@ -176,8 +176,13 @@ namespace _1_k_forms
         {
             int start_index = 0;
             int index;
-            while ((index = richTextBox1.Find(text, start_index, RichTextBoxFinds.WholeWord)) >= 0 || start_index >= richTextBox1.Text.Length)
+            while ((index = richTextBox1.Find(text, start_index, RichTextBoxFinds.WholeWord)) >= 0)
             {
+                if (start_index >= richTextBox1.TextLength)
+                {
+                    searching_text = searching_text_val;
+                    return;
+                }
                 HighlightFont(index, text.Length, colorOfFoundText);
                 start_index = index + text.Length;
             }
@@ -214,7 +219,8 @@ namespace _1_k_forms
 
         private void EncryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (FileStream fileStream = new FileStream("../../TestData.txt", FileMode.OpenOrCreate))
+            if (fileName == null) return;
+            using (FileStream fileStream = new FileStream($"{fileName}", FileMode.OpenOrCreate))
             {
                 using (Aes aes = Aes.Create())
                 {
@@ -224,6 +230,8 @@ namespace _1_k_forms
                         0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
                      };
                     aes.Key = key;
+
+                    //aes.GenerateKey();
 
                     byte[] iv = aes.IV;
                     fileStream.Write(iv, 0, iv.Length);
@@ -237,11 +245,63 @@ namespace _1_k_forms
                         // For example, new StreamWriter(cryptoStream, Encoding.Unicode).
                         using (StreamWriter encryptWriter = new StreamWriter(cryptoStream))
                         {
-                            encryptWriter.WriteLine(richTextBox1.Text);
-                            this.Close();
+                            encryptWriter.WriteLine(richTextBox1.Rtf);
+                            richTextBox1.Text = Convert.ToBase64String(KeyStorage.Protext(aes.Key));
+                            //this.Close();
                         }
                     }
                 }
+            }
+        }
+
+        private async void DecryptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(fileName == null) return;
+            using (FileStream fileStream = new FileStream($"{fileName}", FileMode.Open))
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    byte[] iv = new byte[aes.IV.Length];
+                    int numBytesToRead = aes.IV.Length;
+                    int numBytesRead = 0;
+                    while (numBytesToRead > 0)
+                    {
+                        int n = fileStream.Read(iv, numBytesRead, numBytesToRead);
+                        if (n == 0) break;
+
+                        numBytesRead += n;
+                        numBytesToRead -= n;
+                    }
+
+                    byte[] key =
+                    {
+                        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                        0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
+                    };
+
+                    using (CryptoStream cryptoStream = new CryptoStream(
+                       fileStream,
+                       aes.CreateDecryptor(key, iv),
+                       CryptoStreamMode.Read))
+                    {
+                        // By default, the StreamReader uses UTF-8 encoding.
+                        // To change the text encoding, pass the desired encoding as the second parameter.
+                        // For example, new StreamReader(cryptoStream, Encoding.Unicode).
+                        using (StreamReader decryptReader = new StreamReader(cryptoStream))
+                        {
+                            richTextBox1.Rtf = await decryptReader.ReadToEndAsync();
+                        }
+                    }
+                }
+            }
+            wrongFileFormat = false;
+        }
+
+        private void Form1_Leave(object sender, EventArgs e)
+        {
+            if(richTextBox1.TextLength > 0 && !isSaved)
+            {
+                MessageBox.Show("You are closing this app!!!");
             }
         }
     }

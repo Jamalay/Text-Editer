@@ -57,6 +57,7 @@ namespace _1_k_forms
             this.font_familyName_box = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
+            this.decryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -109,7 +110,8 @@ namespace _1_k_forms
             this.openToolStripMenuItem1,
             this.saveToolStripMenuItem1,
             this.createToolStripMenuItem1,
-            this.encryptToolStripMenuItem});
+            this.encryptToolStripMenuItem,
+            this.decryptToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -323,6 +325,13 @@ namespace _1_k_forms
             this.font_familyName_box.Text = "Calibri";
             this.font_familyName_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_familyName);
             // 
+            // decryptToolStripMenuItem
+            // 
+            this.decryptToolStripMenuItem.Name = "decryptToolStripMenuItem";
+            this.decryptToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.decryptToolStripMenuItem.Text = "Decrypt";
+            this.decryptToolStripMenuItem.Click += new System.EventHandler(this.DecryptToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -337,6 +346,7 @@ namespace _1_k_forms
             this.Name = "Form1";
             this.Text = "Form1";
             this.ClientSizeChanged += new System.EventHandler(this.Form1_ClientSizeChanged);
+            this.Leave += new System.EventHandler(this.Form1_Leave);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -374,5 +384,6 @@ namespace _1_k_forms
         private ToolStripMenuItem encryptToolStripMenuItem;
         private Button TextColorChangeButton;
         private Button BackColorChangeButton;
+        private ToolStripMenuItem decryptToolStripMenuItem;
     }
 }
