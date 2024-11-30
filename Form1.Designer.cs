@@ -41,6 +41,7 @@ namespace _1_k_forms
             this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.encryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -57,7 +58,6 @@ namespace _1_k_forms
             this.font_familyName_box = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
-            this.decryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -100,7 +100,7 @@ namespace _1_k_forms
             this.fontsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(836, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(836, 30);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -122,15 +122,15 @@ namespace _1_k_forms
             this.openToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
             this.openToolStripMenuItem1.Text = "Open";
-            this.openToolStripMenuItem1.Click += new System.EventHandler(this.OpenToolStripMenuItem1_Click);
+            this.openToolStripMenuItem1.Click += new System.EventHandler(this.OpenFileToolStripMenuItem1_Click);
             // 
             // saveToolStripMenuItem1
             // 
             this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
             this.saveToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
-            this.saveToolStripMenuItem1.Text = "Save";
-            this.saveToolStripMenuItem1.Click += new System.EventHandler(this.SaveToolStripMenuItem1_Click);
+            this.saveToolStripMenuItem1.Text = "SaveFile";
+            this.saveToolStripMenuItem1.Click += new System.EventHandler(this.SaveFileToolStripMenuItem1_Click);
             // 
             // createToolStripMenuItem1
             // 
@@ -138,7 +138,7 @@ namespace _1_k_forms
             this.createToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.createToolStripMenuItem1.Size = new System.Drawing.Size(198, 26);
             this.createToolStripMenuItem1.Text = "Create";
-            this.createToolStripMenuItem1.Click += new System.EventHandler(this.CreateToolStripMenuItem1_Click);
+            this.createToolStripMenuItem1.Click += new System.EventHandler(this.CreateNewFileToolStripMenuItem1_Click);
             // 
             // encryptToolStripMenuItem
             // 
@@ -146,6 +146,13 @@ namespace _1_k_forms
             this.encryptToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.encryptToolStripMenuItem.Text = "Encrypt";
             this.encryptToolStripMenuItem.Click += new System.EventHandler(this.EncryptToolStripMenuItem_Click);
+            // 
+            // decryptToolStripMenuItem
+            // 
+            this.decryptToolStripMenuItem.Name = "decryptToolStripMenuItem";
+            this.decryptToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
+            this.decryptToolStripMenuItem.Text = "Decrypt";
+            this.decryptToolStripMenuItem.Click += new System.EventHandler(this.DecryptToolStripMenuItem_Click);
             // 
             // mainToolStripMenuItem
             // 
@@ -325,13 +332,6 @@ namespace _1_k_forms
             this.font_familyName_box.Text = "Calibri";
             this.font_familyName_box.SelectedIndexChanged += new System.EventHandler(this.Change_font_familyName);
             // 
-            // decryptToolStripMenuItem
-            // 
-            this.decryptToolStripMenuItem.Name = "decryptToolStripMenuItem";
-            this.decryptToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.decryptToolStripMenuItem.Text = "Decrypt";
-            this.decryptToolStripMenuItem.Click += new System.EventHandler(this.DecryptToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -346,7 +346,6 @@ namespace _1_k_forms
             this.Name = "Form1";
             this.Text = "Form1";
             this.ClientSizeChanged += new System.EventHandler(this.Form1_ClientSizeChanged);
-            this.Leave += new System.EventHandler(this.Form1_Leave);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);

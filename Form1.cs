@@ -6,38 +6,51 @@ using System.Drawing;
 using System.Linq;
 using System.ComponentModel;
 using System.Security.Cryptography;
+using System.Text;
+using System.IO.Compression;
 
 namespace _1_k_forms
 {
     public partial class Form1 : Form
     {
         string fileName;
+        string filePath;
+        string fileNameWithPath;
         bool mainButton_clicked;
         bool isSaved;
         bool wrongFileFormat;
         string searching_text;
-        SaveFileDialog saveFileDialog = new SaveFileDialog();
-        OpenFileDialog openFileDialog = new OpenFileDialog();
+        SaveFileDialog saveFileDialog;
+        OpenFileDialog openFileDialog;
 
         public Form1()
         {
+            saveFileDialog = new SaveFileDialog();
+            openFileDialog = new OpenFileDialog();
             mainButton_clicked = isSaved = wrongFileFormat = false;
             searching_text = "";
-            saveFileDialog.Filter = "(*.txt)|*.txt|(*.docx)|*.docx|(*.png)|*.png|(*.jamalay)|*.jamalay|(*.xml)|*.xml|(*.rtf)|*.rtf|All files(*.*)|*.*";
+            saveFileDialog.Filter = "(*.rtf)|*.rtf|(*.txt)|*.txt|(*.docx)|*.docx|All files(*.*)|*.*";
             InitializeComponent();
             richTextBox1.Size = new Size(this.Width - 150, this.Height - menuStrip1.Height - 35);
             this.richTextBox1.Location = new System.Drawing.Point((this.ClientSize.Width - richTextBox1.Width) / 2, menuStrip1.Height + 2);
 
         }
 
-        private void OpenToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OpenFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void OpenFile()
         {
             if (openFileDialog.ShowDialog() == DialogResult.Cancel) return;
             wrongFileFormat = false;
             try
             {
-                fileName = openFileDialog.FileName;
-                richTextBox1.LoadFile(fileName/*, RichTextBoxStreamType.RichText*/);
+                fileName = Path.GetFileName(openFileDialog.FileName);
+                filePath = Path.GetDirectoryName(openFileDialog.FileName);
+                fileNameWithPath = $"{filePath}\\{fileName}";
+                richTextBox1.LoadFile(fileNameWithPath, RichTextBoxStreamType.RichText);
                 this.Text = fileName;
                 isSaved = true;
             }
@@ -48,15 +61,41 @@ namespace _1_k_forms
             }
             finally
             {
-                if(wrongFileFormat)
+                if (wrongFileFormat)
                 {
-                    richTextBox1.LoadFile(fileName, RichTextBoxStreamType.PlainText);
+                    richTextBox1.LoadFile(fileNameWithPath, RichTextBoxStreamType.PlainText);
                     richTextBox1.ReadOnly = true;
                 }
             }
         }
 
-        private void SaveToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OpenFile(string fileNameWithPath)
+        {
+            //richTextBox1.LoadFile(fileNameWithPath, RichTextBoxStreamType.PlainText);
+            //richTextBox1.ReadOnly = true;
+            wrongFileFormat = false;
+            try
+            {
+                richTextBox1.LoadFile(fileNameWithPath, RichTextBoxStreamType.RichText);
+                this.Text = fileName;
+                isSaved = true;
+            }
+            catch (Exception ex)
+            {
+                wrongFileFormat = true;
+                //MessageBox.Show($"Ошибка: {ex.Message}.\nФайл будет открыт в режиме \"Только для чтения\"");
+            }
+            finally
+            {
+                if (wrongFileFormat)
+                {
+                    richTextBox1.LoadFile(fileNameWithPath, RichTextBoxStreamType.PlainText);
+                    richTextBox1.ReadOnly = true;
+                }
+            }
+        }
+
+        private void SaveFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (wrongFileFormat) return;
             string rtf_text = richTextBox1.Rtf;
@@ -64,20 +103,46 @@ namespace _1_k_forms
             Text = Text.Substring(0, Text.IndexOf("*"));
             if (fileName != null)
             {
-                richTextBox1.SaveFile(fileName);
+                richTextBox1.SaveFile(fileNameWithPath);
                 return;
             }
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
-            fileName = saveFileDialog.FileName;
-            richTextBox1.SaveFile(fileName);
+            SaveFile();
         }
 
-        private void CreateToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void SaveFile()
         {
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
-            fileName = saveFileDialog.FileName;
-            System.IO.File.Create(fileName).Close();
-            this.Text = fileName;
+            try
+            {
+                if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
+                fileNameWithPath = saveFileDialog.FileName;
+                filePath = Path.GetDirectoryName(fileNameWithPath);
+                fileName = Path.GetFileName(fileNameWithPath);
+                richTextBox1.SaveFile(fileNameWithPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CreateNewFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CreateNewFile();
+        }
+
+        private void CreateNewFile()
+        {
+            try
+            {
+                if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
+                fileName = saveFileDialog.FileName;
+                System.IO.File.Create(fileName).Close();
+                this.Text = fileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void FontsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -219,89 +284,126 @@ namespace _1_k_forms
 
         private void EncryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (fileName == null) return;
-            using (FileStream fileStream = new FileStream($"{fileName}", FileMode.OpenOrCreate))
+            if (fileName == null) SaveFile();
+
+            try
             {
+                // Генерируем новый ключ
                 using (Aes aes = Aes.Create())
                 {
-                    byte[] key =
-                    {
-                        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                        0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
-                     };
-                    aes.Key = key;
+                    aes.GenerateKey();
+                    byte[] key = aes.Key;
 
-                    //aes.GenerateKey();
+                    // Шифруем ключ с помощью DPAPI
+                    byte[] protectedKey = ProtectedData.Protect(key, null, DataProtectionScope.CurrentUser);
 
+                    //Путь к архиву, который будет создан или открыт
+                    string zipPath = $"{filePath}\\{fileName}.zip";
+
+                    // Сохраняем зашифрованный ключ в файл
+                    string keyFilePath = $"{filePath}\\key.dat"; // Путь к файлу для сохранения зашифрованного ключа
+                    File.WriteAllBytes(keyFilePath, protectedKey);
+
+
+                    // Генерируем IV и записываем его в файл
                     byte[] iv = aes.IV;
-                    fileStream.Write(iv, 0, iv.Length);
-                    using (CryptoStream cryptoStream = new CryptoStream(
-                        fileStream,
-                        aes.CreateEncryptor(),
-                        CryptoStreamMode.Write))
+
+                    using (FileStream fileStream = new FileStream(fileNameWithPath, FileMode.OpenOrCreate))
                     {
-                        // By default, the StreamWriter uses UTF-8 encoding.
-                        // To change the text encoding, pass the desired encoding as the second parameter.
-                        // For example, new StreamWriter(cryptoStream, Encoding.Unicode).
-                        using (StreamWriter encryptWriter = new StreamWriter(cryptoStream))
+                        // Записываем IV в начало файла
+                        fileStream.Write(iv, 0, iv.Length);
+
+                        using (CryptoStream cryptoStream = new CryptoStream(
+                            fileStream,
+                            aes.CreateEncryptor(),
+                            CryptoStreamMode.Write))
                         {
-                            encryptWriter.WriteLine(richTextBox1.Rtf);
-                            richTextBox1.Text = Convert.ToBase64String(KeyStorage.Protext(aes.Key));
-                            //this.Close();
+                            using (StreamWriter encryptWriter = new StreamWriter(cryptoStream))
+                                encryptWriter.WriteLine(richTextBox1.Rtf);
                         }
                     }
+                    // Создаем или открываем ZIP-архив
+                    using (var zipArchive = ZipFile.Open(zipPath, ZipArchiveMode.Update))
+                    {
+                        // Добавляем файлы в архив
+                        zipArchive.CreateEntryFromFile(keyFilePath, Path.GetFileName(keyFilePath));
+                        zipArchive.CreateEntryFromFile(fileNameWithPath, Path.GetFileName(fileNameWithPath));
+                        File.Delete(keyFilePath);
+                        File.Delete(fileNameWithPath);
+                    }
+                    File.Move(zipPath, $"{filePath}\\{fileName}.enc");
+                    this.Close();
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private async void DecryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(fileName == null) return;
-            using (FileStream fileStream = new FileStream($"{fileName}", FileMode.Open))
+            if (fileName == null) OpenFile();
+
+            try
             {
-                using (Aes aes = Aes.Create())
+                if(!fileName.Contains(".enc"))
+                    throw new Exception("Файлы без расширения .enc нельзя расшифровать");
+
+                string f = Path.ChangeExtension(fileNameWithPath, ".zip");
+                File.Move(fileNameWithPath, f);
+                fileNameWithPath = f;
+
+                ZipFile.ExtractToDirectory(fileNameWithPath, filePath);
+                File.Delete(fileNameWithPath);
+                fileNameWithPath = Path.ChangeExtension(fileNameWithPath, "");
+                fileName = Path.GetFileName(fileNameWithPath);
+                filePath = Path.GetDirectoryName(fileNameWithPath);
+
+                OpenFile(fileNameWithPath);
+
+                // Считываем зашифрованный ключ из файла
+                string keyFilePath = $"{filePath}\\key.dat"; // Путь к файлу, где хранится зашифрованный ключ
+                byte[] protectedKey = File.ReadAllBytes(keyFilePath);
+                // Дешифруем ключ с помощью DPAPI
+                byte[] key = ProtectedData.Unprotect(protectedKey, null, DataProtectionScope.CurrentUser);
+                using (FileStream fileStream = new FileStream(fileNameWithPath, FileMode.Open))
                 {
-                    byte[] iv = new byte[aes.IV.Length];
-                    int numBytesToRead = aes.IV.Length;
-                    int numBytesRead = 0;
-                    while (numBytesToRead > 0)
+                    using (Aes aes = Aes.Create())
                     {
-                        int n = fileStream.Read(iv, numBytesRead, numBytesToRead);
-                        if (n == 0) break;
-
-                        numBytesRead += n;
-                        numBytesToRead -= n;
-                    }
-
-                    byte[] key =
-                    {
-                        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                        0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
-                    };
-
-                    using (CryptoStream cryptoStream = new CryptoStream(
-                       fileStream,
-                       aes.CreateDecryptor(key, iv),
-                       CryptoStreamMode.Read))
-                    {
-                        // By default, the StreamReader uses UTF-8 encoding.
-                        // To change the text encoding, pass the desired encoding as the second parameter.
-                        // For example, new StreamReader(cryptoStream, Encoding.Unicode).
-                        using (StreamReader decryptReader = new StreamReader(cryptoStream))
+                        byte[] iv = new byte[aes.IV.Length];
+                        int numBytesToRead = aes.IV.Length;
+                        int numBytesRead = 0;
+                        while (numBytesToRead > 0)
                         {
-                            richTextBox1.Rtf = await decryptReader.ReadToEndAsync();
+                            int n = fileStream.Read(iv, numBytesRead, numBytesToRead);
+                            if (n == 0) break;
+
+                            numBytesRead += n;
+                            numBytesToRead -= n;
+                        }
+
+                        using (CryptoStream cryptoStream = new CryptoStream(
+                           fileStream,
+                           aes.CreateDecryptor(key, iv),
+                           CryptoStreamMode.Read))
+                        {
+                            using (StreamReader decryptReader = new StreamReader(cryptoStream))
+                            {
+                                richTextBox1.Text = await decryptReader.ReadToEndAsync();
+                            }
                         }
                     }
+                    File.Delete(keyFilePath);
                 }
-            }
-            wrongFileFormat = false;
-        }
 
-        private void Form1_Leave(object sender, EventArgs e)
-        {
-            if(richTextBox1.TextLength > 0 && !isSaved)
+                wrongFileFormat = false;
+                richTextBox1.ReadOnly = false;
+                richTextBox1.Rtf = richTextBox1.Text;
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show("You are closing this app!!!");
+                MessageBox.Show(ex.Message);
             }
         }
     }
